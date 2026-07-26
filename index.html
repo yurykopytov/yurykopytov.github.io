@@ -23,6 +23,8 @@
       --muted: #9a9a9a;
       --paper: #ffffff;
       --selection: #f3cf55;
+      --fit-font-size: clamp(21px, 2.35vw, 38px);
+      --fit-line-height: 1;
     }
 
     html {
@@ -30,14 +32,14 @@
       background: var(--paper);
       color: var(--text);
       font-family: Arial, Helvetica, sans-serif;
-      font-size: clamp(22px, 2.35vw, 38px);
+      font-size: var(--fit-font-size);
       font-weight: 700;
       letter-spacing: 0;
     }
 
     body {
       min-height: 100%;
-      line-height: 1;
+      line-height: var(--fit-line-height);
       text-rendering: geometricPrecision;
     }
 
@@ -49,7 +51,7 @@
     main {
       max-width: 36em;
       margin: 0 auto;
-      padding: 0.5rem 2rem 2rem;
+      padding: 0.5rem 2rem;
     }
 
     p {
@@ -84,15 +86,11 @@
 
     @media (max-width: 700px) {
       main {
-        padding: 3.5rem 1.5rem 6rem;
+        padding-inline: 1.5rem;
       }
     }
 
     @media (max-width: 420px) {
-      html {
-        font-size: 21px;
-      }
-
       main {
         padding-inline: 1rem;
       }
@@ -107,5 +105,78 @@
 
     <p>If any of this is interesting, <a href="mailto:yury.kopytov@gmail.com">write to me</a>.</p>
   </main>
+  <script>
+    (() => {
+      const root = document.documentElement;
+      const content = document.querySelector("main");
+      const minimumFontSize = 12;
+      const maximumFontSize = 80;
+      let resizeFrame;
+
+      const viewportHeight = () =>
+        window.visualViewport?.height ?? root.clientHeight;
+
+      const setFontSize = (size) => {
+        root.style.setProperty("--fit-font-size", `${size}px`);
+      };
+
+      const setLineHeight = (size) => {
+        root.style.setProperty("--fit-line-height", size);
+      };
+
+      const fitContentToViewport = () => {
+        const availableHeight = Math.floor(viewportHeight()) - 1;
+        let lowerBound = minimumFontSize;
+        let upperBound = maximumFontSize;
+        let bestFit = minimumFontSize;
+
+        setLineHeight(1);
+
+        for (let step = 0; step < 18; step += 1) {
+          const candidate = (lowerBound + upperBound) / 2;
+          setFontSize(candidate);
+
+          if (content.getBoundingClientRect().height <= availableHeight) {
+            bestFit = candidate;
+            lowerBound = candidate;
+          } else {
+            upperBound = candidate;
+          }
+        }
+
+        setFontSize(Math.floor(bestFit * 100) / 100);
+
+        lowerBound = 1;
+        upperBound = 1.2;
+        let bestLineHeight = 1;
+
+        for (let step = 0; step < 16; step += 1) {
+          const candidate = (lowerBound + upperBound) / 2;
+          setLineHeight(candidate);
+
+          if (content.getBoundingClientRect().height <= availableHeight) {
+            bestLineHeight = candidate;
+            lowerBound = candidate;
+          } else {
+            upperBound = candidate;
+          }
+        }
+
+        setLineHeight(bestLineHeight);
+      };
+
+      const scheduleFit = () => {
+        window.cancelAnimationFrame(resizeFrame);
+        resizeFrame = window.requestAnimationFrame(fitContentToViewport);
+      };
+
+      scheduleFit();
+      window.addEventListener("resize", scheduleFit, { passive: true });
+      window.visualViewport?.addEventListener("resize", scheduleFit, {
+        passive: true,
+      });
+      document.fonts?.ready.then(scheduleFit);
+    })();
+  </script>
 </body>
 </html>
