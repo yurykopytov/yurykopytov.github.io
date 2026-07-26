@@ -23,7 +23,7 @@
       --muted: #9a9a9a;
       --paper: #ffffff;
       --selection: #f3cf55;
-      --link: #ffee8c;
+      --link: #FFEE8C;
       --fit-font-size: clamp(21px, 2.35vw, 38px);
       --fit-line-height: 1;
     }
@@ -68,8 +68,12 @@
 
     a,
     a:visited {
-      color: var(--link);
+      background: var(--link);
+      color: var(--text);
+      padding-inline: 0.03em;
       text-decoration: none;
+      -webkit-box-decoration-break: clone;
+      box-decoration-break: clone;
     }
 
     a:focus-visible {
