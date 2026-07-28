@@ -216,14 +216,14 @@
           id: "ostengruppe",
           name: "Ostengruppe — Kirill Blagodatskikh",
           path: "thumbnails-balanced/ostengruppe/ostengruppe",
-          count: 19,
+          count: 22,
           salt: 31,
         },
         {
           id: "text-pictures",
           name: "Text and Pictures — Max Spivakov",
           path: "thumbnails-balanced/text-pictures/text-pictures",
-          count: 15,
+          count: 16,
           salt: 47,
         },
         {
@@ -231,18 +231,21 @@
           name: "The Temporary State — Roman Gornitsky",
           path: "thumbnails-balanced/gornitsky/gornitsky",
           count: 31,
+          exclude: [3, 10, 20],
           salt: 61,
         },
       ];
 
       const works = designers
         .flatMap((designer) =>
-          Array.from({ length: designer.count }, (_, index) => ({
-            designer,
-            number: index + 1,
-            order:
-              Math.sin((index + 1) * designer.salt * 12.9898) * 43758.5453,
-          }))
+          Array.from({ length: designer.count }, (_, index) => index + 1)
+            .filter((number) => !designer.exclude?.includes(number))
+            .map((number) => ({
+              designer,
+              number,
+              order:
+                Math.sin(number * designer.salt * 12.9898) * 43758.5453,
+            }))
         )
         .sort(
           (first, second) =>
