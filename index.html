@@ -10,100 +10,19 @@
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://yrykpytv.de/">
   <link rel="canonical" href="https://yrykpytv.de/">
-  <style>
-    *, *::before, *::after {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    :root {
-      color-scheme: light;
-      --text: #111111;
-      --muted: #9a9a9a;
-      --paper: #ffffff;
-      --selection: #f3cf55;
-      --link: #FFEE8C;
-      --fit-font-size: clamp(21px, 2.35vw, 38px);
-      --fit-line-height: 1;
-    }
-
-    html {
-      min-height: 100%;
-      background: var(--paper);
-      color: var(--text);
-      font-family: Arial, Helvetica, sans-serif;
-      font-size: var(--fit-font-size);
-      font-weight: 700;
-      letter-spacing: 0;
-    }
-
-    body {
-      min-height: 100%;
-      line-height: var(--fit-line-height);
-      text-rendering: geometricPrecision;
-    }
-
-    ::selection {
-      background: var(--selection);
-      color: var(--text);
-    }
-
-    main {
-      max-width: 36em;
-      margin: 0 auto;
-      padding: 0.5rem 2rem;
-    }
-
-    p {
-      font-size: 1rem;
-      hyphens: none;
-      -webkit-hyphens: none;
-      hanging-punctuation: first last;
-    }
-
-    p + p {
-      margin-top: 0.5em;
-    }
-
-    a,
-    a:visited {
-      background: var(--link);
-      color: var(--text);
-      padding-inline: 0.03em;
-      text-decoration: none;
-      -webkit-box-decoration-break: clone;
-      box-decoration-break: clone;
-    }
-
-    a:focus-visible {
-      outline: 0.08em solid currentColor;
-      outline-offset: 0.12em;
-    }
-
-    @media (max-width: 700px) {
-      main {
-        padding-inline: 1.5rem;
-      }
-    }
-
-    @media (max-width: 420px) {
-      main {
-        padding-inline: 1rem;
-      }
-    }
-  </style>
 </head>
 <body>
   <main aria-label="Personal introduction">
     <p>Hi all, I'm Yury, a product manager based in Berlin, working at <a href="https://rasa.com/">Rasa</a> on infrastructure for enterprise AI agents. Before that, I joined <a href="https://anytype.io/">Anytype</a> to launch its first product — a local-first, open-source workspace focused on data ownership. Prior to that, I developed <a href="https://ya.ru/alice">Alice</a>, Yandex's voice assistant, and introduced <a href="https://yandex.com/blog/yacompany-com/yet-another-conference-2021-turning-a-new-page">its first LLM-powered features</a> a year before chatgpt. Throughout my career, I've explored various technological stacks, including mobile and performance marketing, e2ee technologies, and recsys.</p>
 
-    <p>Years earlier, I also managed <a href="https://yrykpytv.de/design/">the design and publishing department</a> at a contemporary art museum, where I led design and web initiatives, collaborated with remarkable artists such as Jan van Toorn, Jaume Plensa, Komar &amp; Melamid, Peter Weibel, Yoko Ono, Shepard Fairey, as well as institutions like Marlboro Gallery, Saatchi Gallery, Hamburger Bahnhof, Venice Biennale, MACBA, Van Abbemuseum, and many others. This experience inspired me to create a digital products for culture, transforming offline experiences into a digital-native format. Graphic design remains a significant interest for me alongside the tech field. If any of this is interesting, <a href="https://mail.google.com/mail/?view=cm&amp;fs=1&amp;to=yrykpytv%40gmail.com&amp;su=Hi%20from%20the%20website" target="_blank" rel="noopener noreferrer">write to me</a>.</p>
+    <p>Years earlier, I also managed <a href="design/">the design and publishing department</a> at a contemporary art museum, where I led design and web initiatives, collaborated with remarkable artists such as Jan van Toorn, Jaume Plensa, Komar &amp; Melamid, Peter Weibel, Yoko Ono, Shepard Fairey, as well as institutions like Marlboro Gallery, Saatchi Gallery, Hamburger Bahnhof, Venice Biennale, MACBA, Van Abbemuseum, and many others. This experience inspired me to create a digital products for culture, transforming offline experiences into a digital-native format. Graphic design remains a significant interest for me alongside the tech field. If any of this is interesting, <a href="https://mail.google.com/mail/?view=cm&amp;fs=1&amp;to=yrykpytv%40gmail.com&amp;su=Hi%20from%20the%20website" target="_blank" rel="noopener noreferrer">write to me</a>.</p>
   </main>
   <script>
     (() => {
       const root = document.documentElement;
       const content = document.querySelector("main");
+      // Include paragraph margins in the measured content box.
+      content.style.display = "flow-root";
       const minimumFontSize = 12;
       const maximumFontSize = 80;
       let resizeFrame;
@@ -112,15 +31,17 @@
         window.visualViewport?.height ?? root.clientHeight;
 
       const setFontSize = (size) => {
-        root.style.setProperty("--fit-font-size", `${size}px`);
+        root.style.fontSize = `${size}px`;
       };
 
       const setLineHeight = (size) => {
-        root.style.setProperty("--fit-line-height", size);
+        root.style.lineHeight = size;
       };
 
       const fitContentToViewport = () => {
-        const availableHeight = Math.floor(viewportHeight()) - 1;
+        const bodyStyle = window.getComputedStyle(document.body);
+        const verticalMargins = parseFloat(bodyStyle.marginTop) + parseFloat(bodyStyle.marginBottom);
+        const availableHeight = Math.floor(viewportHeight() - verticalMargins) - 8;
         let lowerBound = minimumFontSize;
         let upperBound = maximumFontSize;
         let bestFit = minimumFontSize;
